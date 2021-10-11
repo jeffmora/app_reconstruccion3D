@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="logosui">
+    <file>ER.png</file>
+    <file>Logo-UTSrd.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="logos">
+    <file>media/ER.png</file>
+    <file>media/Logo-UTSrd.png</file>
+  </qresource>
+</RCC>
