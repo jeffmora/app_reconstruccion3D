@@ -5,9 +5,11 @@
 
 
 # Importarmos todas las clases y métodos del la interfaz "app.py".
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
 from app import *
 from crear import *
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QGraphicsPixmapItem, QGraphicsScene
 
 # Importamos librerias propias del sistama para trabajar.
 import os
@@ -55,6 +57,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                 self.stackedWidget.setCurrentWidget(self.pgn_imagenes)
                 self.BarraEstado.showMessage("Proyecto creado en '%s'." %crear_directorio, 2000)
                 self.ImportarImagenes.setEnabled(True)
+                self.leerdirectorio()
         else:
             self.BarraEstado.showMessage("No se creo el proyecto!")
         
@@ -75,6 +78,17 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                 self.BarraEstado.showMessage("Proyecto '%s' abierto correctamente." %abrir_directorio, 2000)
                 self.stackedWidget.setCurrentWidget(self.pgn_imagenes)
                 self.ImportarImagenes.setEnabled(True)
+                self.leerdirectorio()
+                self.scene = QGraphicsScene(self)
+                pixmap = QPixmap()
+                pixmap.load(self.dir_imagenes+"/101_139411556229572-1.jpg")
+                pixmap.scaled(350, 300, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                
+                item = QGraphicsPixmapItem(pixmap)
+                self.scene.addItem(item)
+                self.visualimg.setScene(self.scene)
+
+
             else:
                 self.BarraEstado.showMessage("El proyecto que intenta abrir no se ha creado, intente con 'Nuevo proyecto'.", 2000)
         else:
@@ -97,10 +111,10 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             os.mkdir(dir_reconstruccion)
         
         #run(dir_entrada, dir_coincidencias, par_sensor, dir_reconstruccion)
-        print(dir_entrada)
-        print(dir_salida)
-        print(dir_coincidencias)
-        print(dir_reconstruccion)
+        #print(dir_entrada)
+        #print(dir_salida)
+        #print(dir_coincidencias)
+        #print(dir_reconstruccion)
     
     def importarimagenes(self):
         '''Este metodo permite la importar cada una de las imagenes con las que vamos a trabajar,
@@ -118,7 +132,12 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             
             self.BarraEstado.showMessage("Imagenes importadas correctamente")
         else:
-            self.BarraEstado.showMessage("Seleccione las imagenes para continuar")      
+            self.BarraEstado.showMessage("Seleccione las imagenes para continuar")
+
+    def leerdirectorio(self):
+        imagenes = os.listdir(self.dir_imagenes)
+        self.listaimg.addItems(imagenes)
+
    
 
 # Bucle de trabajo.

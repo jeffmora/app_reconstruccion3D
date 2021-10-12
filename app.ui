@@ -10,6 +10,12 @@
     <height>700</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="focusPolicy">
    <enum>Qt::NoFocus</enum>
   </property>
@@ -72,7 +78,7 @@
     <widget class="QWidget" name="pgn_imagenes">
      <widget class="QPushButton" name="Crear3d">
       <property name="enabled">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="geometry">
        <rect>
@@ -89,7 +95,7 @@
       </property>
       <property name="styleSheet">
        <string notr="true">border-radius: 0px;
-background-color: rgb(46, 52, 54);
+background-color: rgb(136, 138, 133);
 color: rgb(255, 255, 255);
 </string>
       </property>
@@ -103,7 +109,7 @@ color: rgb(255, 255, 255);
         <x>1</x>
         <y>1</y>
         <width>260</width>
-        <height>611</height>
+        <height>615</height>
        </rect>
       </property>
       <property name="font">
@@ -458,7 +464,7 @@ color: rgb(255, 255, 255);
          </rect>
         </property>
         <property name="title">
-         <string>Modelo geométrico</string>
+         <string>Modelo geométrico:</string>
         </property>
         <widget class="QRadioButton" name="sel2mga">
          <property name="geometry">
@@ -552,7 +558,7 @@ color: rgb(255, 255, 255);
          </rect>
         </property>
         <property name="title">
-         <string>Método de coincidencia</string>
+         <string>Método de coincidencia:</string>
         </property>
         <widget class="QRadioButton" name="sel2mca">
          <property name="geometry">
@@ -715,13 +721,13 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>140</y>
+          <y>145</y>
           <width>220</width>
           <height>125</height>
          </rect>
         </property>
         <property name="title">
-         <string>Ref. intrínsecos</string>
+         <string>Ref. intrínsecos:</string>
         </property>
         <widget class="QRadioButton" name="sel3rfa">
          <property name="geometry">
@@ -796,7 +802,7 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>280</y>
+          <y>285</y>
           <width>220</width>
           <height>80</height>
          </rect>
@@ -818,7 +824,7 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>270</y>
+          <y>275</y>
           <width>220</width>
           <height>10</height>
          </rect>
@@ -831,13 +837,13 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>365</y>
+          <y>370</y>
           <width>220</width>
           <height>105</height>
          </rect>
         </property>
         <property name="title">
-         <string>Método triangulación</string>
+         <string>Método triangulación:</string>
         </property>
         <widget class="QRadioButton" name="sel3mta">
          <property name="geometry">
@@ -902,13 +908,13 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>475</y>
+          <y>480</y>
           <width>220</width>
           <height>125</height>
          </rect>
         </property>
         <property name="title">
-         <string>Método Recesión</string>
+         <string>Método recesión:</string>
         </property>
         <widget class="QRadioButton" name="sel3mra">
          <property name="geometry">
@@ -988,7 +994,7 @@ color: rgb(255, 255, 255);
       <property name="geometry">
        <rect>
         <x>27</x>
-        <y>616</y>
+        <y>620</y>
         <width>234</width>
         <height>25</height>
        </rect>
@@ -1033,6 +1039,60 @@ color: rgb(255, 255, 255);
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+     </widget>
+     <widget class="QStackedWidget" name="stackedtrabajo">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>10</y>
+        <width>710</width>
+        <height>391</height>
+       </rect>
+      </property>
+      <widget class="QWidget" name="page">
+       <widget class="QListWidget" name="listaimg">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>30</y>
+          <width>350</width>
+          <height>300</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QGraphicsView" name="visualimg">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>30</y>
+          <width>350</width>
+          <height>300</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="tituloimg">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>5</y>
+          <width>150</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Imagenes Importadas</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_2"/>
      </widget>
     </widget>
    </widget>
