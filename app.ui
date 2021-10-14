@@ -1027,19 +1027,6 @@ color: rgb(255, 255, 255);
        <enum>Qt::Vertical</enum>
       </property>
      </widget>
-     <widget class="Line" name="line_9">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>649</y>
-        <width>1000</width>
-        <height>3</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
      <widget class="QStackedWidget" name="stackedtrabajo">
       <property name="geometry">
        <rect>
@@ -1055,17 +1042,7 @@ color: rgb(255, 255, 255);
          <rect>
           <x>0</x>
           <y>30</y>
-          <width>350</width>
-          <height>300</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QGraphicsView" name="visualimg">
-        <property name="geometry">
-         <rect>
-          <x>360</x>
-          <y>30</y>
-          <width>350</width>
+          <width>300</width>
           <height>300</height>
          </rect>
         </property>
@@ -1081,7 +1058,7 @@ color: rgb(255, 255, 255);
         </property>
         <property name="font">
          <font>
-          <pointsize>10</pointsize>
+          <pointsize>11</pointsize>
          </font>
         </property>
         <property name="text">
@@ -1089,6 +1066,76 @@ color: rgb(255, 255, 255);
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="visualimg">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>30</y>
+          <width>400</width>
+          <height>300</height>
+         </rect>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(255, 255, 255);</string>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="text">
+         <string>Visualizador</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="agregar">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>335</y>
+          <width>80</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(46, 52, 54);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Agregar</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="eliminar">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>335</y>
+          <width>80</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(46, 52, 54);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Eliminar</string>
         </property>
        </widget>
       </widget>
