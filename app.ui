@@ -76,33 +76,6 @@
      </widget>
     </widget>
     <widget class="QWidget" name="pgn_imagenes">
-     <widget class="QPushButton" name="Crear3d">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>535</x>
-        <y>580</y>
-        <width>200</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">border-radius: 0px;
-background-color: rgb(136, 138, 133);
-color: rgb(255, 255, 255);
-</string>
-      </property>
-      <property name="text">
-       <string>Crear modelo 3D</string>
-      </property>
-     </widget>
      <widget class="QTabWidget" name="tabConfig">
       <property name="geometry">
        <rect>
@@ -990,7 +963,7 @@ color: rgb(255, 255, 255);
        </widget>
       </widget>
      </widget>
-     <widget class="QPushButton" name="Crear3d_2">
+     <widget class="QPushButton" name="Cargar">
       <property name="geometry">
        <rect>
         <x>27</x>
@@ -1031,29 +1004,32 @@ color: rgb(255, 255, 255);
       <property name="geometry">
        <rect>
         <x>280</x>
-        <y>10</y>
+        <y>0</y>
         <width>710</width>
-        <height>391</height>
+        <height>650</height>
        </rect>
       </property>
-      <widget class="QWidget" name="page">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="pgn_importadas">
        <widget class="QListWidget" name="listaimg">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>30</y>
-          <width>300</width>
-          <height>300</height>
+          <y>35</y>
+          <width>260</width>
+          <height>350</height>
          </rect>
         </property>
        </widget>
        <widget class="QLabel" name="tituloimg">
         <property name="geometry">
          <rect>
-          <x>280</x>
-          <y>5</y>
-          <width>150</width>
-          <height>20</height>
+          <x>260</x>
+          <y>0</y>
+          <width>190</width>
+          <height>25</height>
          </rect>
         </property>
         <property name="font">
@@ -1071,10 +1047,10 @@ color: rgb(255, 255, 255);
        <widget class="QLabel" name="visualimg">
         <property name="geometry">
          <rect>
-          <x>310</x>
-          <y>30</y>
-          <width>400</width>
-          <height>300</height>
+          <x>270</x>
+          <y>35</y>
+          <width>440</width>
+          <height>350</height>
          </rect>
         </property>
         <property name="styleSheet">
@@ -1084,7 +1060,7 @@ color: rgb(255, 255, 255);
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="text">
-         <string>Visualizador</string>
+         <string/>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
@@ -1094,7 +1070,7 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>335</y>
+          <y>390</y>
           <width>80</width>
           <height>25</height>
          </rect>
@@ -1118,7 +1094,7 @@ color: rgb(255, 255, 255);
         <property name="geometry">
          <rect>
           <x>90</x>
-          <y>335</y>
+          <y>390</y>
           <width>80</width>
           <height>25</height>
          </rect>
@@ -1138,8 +1114,167 @@ color: rgb(255, 255, 255);
          <string>Eliminar</string>
         </property>
        </widget>
+       <widget class="QPushButton" name="ir_resultados">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>100</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(136, 138, 133);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Resultados</string>
+        </property>
+       </widget>
+       <widget class="QProgressBar" name="progressBar">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>440</y>
+          <width>710</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="format">
+         <string>%v/%m</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="Crear3d">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>480</y>
+          <width>200</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(136, 138, 133);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Crear modelo 3D</string>
+        </property>
+       </widget>
       </widget>
-      <widget class="QWidget" name="page_2"/>
+      <widget class="QWidget" name="pgn_resultados">
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <widget class="QListWidget" name="listares">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>35</y>
+          <width>710</width>
+          <height>350</height>
+         </rect>
+        </property>
+       </widget>
+       <widget class="QLabel" name="titulores">
+        <property name="geometry">
+         <rect>
+          <x>280</x>
+          <y>0</y>
+          <width>150</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Resultados</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="ir_importadas">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>100</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(46, 52, 54);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Imagenes</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="Visualizar">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>255</x>
+          <y>480</y>
+          <width>200</width>
+          <height>40</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>14</pointsize>
+         </font>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">border-radius: 0px;
+background-color: rgb(46, 52, 54);
+color: rgb(255, 255, 255);
+</string>
+        </property>
+        <property name="text">
+         <string>Visualizar</string>
+        </property>
+       </widget>
+      </widget>
      </widget>
     </widget>
    </widget>
