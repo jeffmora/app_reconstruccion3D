@@ -1,28 +1,32 @@
-# Creado por Jefferson Mora Meza. May-2021
+#!/venv/bin/ python
 
-# Este script permite lanzar la aplicacion y mantenerla activa, mientras ejecutamos cada 
-# una de las funciones de nuestra aplicacion. Es importante que desde este script se
-# configure el comportamiento de nuestra apliacion y solo dejemos el script "app.py" para
-# el diseño de la misma. Asi no mezclaremos funcionalidad con diseño.
+"""
+Creado Octubre 19 de 2021
+Autor: Jefferson Mora M.
+"""
 
+# Este script permite lanzar la aplicacion y mantenerla activa, mientras ejecutamos cada una de las funciones de 
+# nuestra aplicacion. Es importante que desde este script se configure el comportamiento de nuestra aplicacion y 
+# solo dejemos el script "app.py" para el diseño de la misma. Asi no mezclaremos funcionalidad con diseño.
 
-# Importarmos todas las clases y metodos del la interfaz "app.py".
+# app.py = Script de diseño de la aplicacion.
+# crear.py = Script que llama las dependencias segun las necesite para el proceso de reconstrucción.
 
-from PyQt5.QtCore import Qt
+# ==================================== IMPORTAR LIBRERIAS ====================================
+# Se importan todas las clases/metodos de la interfaz "app.py" y el metodo de las dependencias "crear.py". Asimismo
+# las librerias para interacturar con el sistema.
 from PyQt5.QtGui import QPixmap
 from app import *
 from crear import *
 from PyQt5.QtWidgets import QFileDialog
-
-# Importamos librerias propias del sistema para trabajar.
 import os
 from os.path import expanduser
 import shutil
 import subprocess
 
+# =================================== CLASE PRINCIPAL =================================== 
 # Esta es la clase que crea la ventana de trabajo, tomando las carecteriticas de diseño y enlazando las
-# funciones de los botones de "app.py". 
-
+# funciones de los botones de "app.py".
 class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
     
     def __init__(self, *args, **kwargs):
@@ -31,9 +35,8 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                 
         # ============================== PARAMETROS INICIALES ============================== 
         self.stackedWidget.setCurrentWidget(self.pgn_inicio)
-        self.BarraEstado.showMessage("Listo")
         self.configdefecto()
-        self.progressBar.setTextVisible(False)
+        self.BarraEstado.showMessage("Listo")
 
         # ============================== RELACION BOTON-FUNCION ==============================
         # Relacionamos cada una de las señales que se emiten por la pulsacion de cada boton con una funcion
@@ -55,7 +58,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
     # ============================== FUNCIONES ==============================
     
     # ===== NUEVO PROYECTO =====
-    # Permite la creacion del directorio sobre el cual vamos a trabajar, asimismo se encarga de validar que exista
+    # Crea un directorio de trabajo de acuerdo al nombre que el usuario decida. Asimismo se encarga de validar que exista
     # el directorio de trabajo para habilitar la opcion de importar imagenes.
     def nuevoproyecto(self):
         crear_directorio = QFileDialog.getExistingDirectory(
@@ -80,8 +83,8 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.BarraEstado.showMessage("No se creo el proyecto!")
 
     # ===== ABRIR PROYECTO =====
-    # Permite la apertura de un directorio previamente creado, sobre el cual vamos a trabajar, asimismo se encarga
-    # de validar que exista el directorio de trabajo para habilitar la opcion de importar imagenes.     
+    # Abre un directorio previamente creado. Asimismo se encarga de validar que exista el directorio de trabajo para habilitar
+    # la opcion de importar imagenes, de haber hay imagenes y/o resultados los muestra al usuario.     
     def abrirproyecto(self):
         abrir_directorio = QFileDialog.getExistingDirectory(
             parent = self,
@@ -99,10 +102,12 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                 self.ImportarImagenes.setEnabled(True)
                 self.leerdirectorio()
                 if self.leer_imagenes != []:
-                    self.habilitarcrear3d()
+                    self.bloqueoinferfaz(crear="On")
                     self.leerresultados()
                     if self.leer_resultados != []:
                         self.bloqueoinferfaz(ir_resultados="On")
+                    else:
+                        self.bloqueoinferfaz(ir_resultados="Off")
             else:
                 self.BarraEstado.showMessage("El proyecto que intenta abrir no se ha creado, intente con 'Nuevo proyecto'.", 2000)
         else:
@@ -113,22 +118,21 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.close()
 
     # ===== CREAR MODELO 3D =====
-    # Este metodo es el encargado de procesar cada imagen y generar el modelo 3D de la reconstrucción final.
+    # Ejecuta el procesamiento de cada imagen y llama las dependencias para generar el modelo 3D de la reconstrucción final.
     # Para esto se utiliza el script "crear.py" encargado de ejecutar cada una de la funciones de las librerias.
     def crearmodelo(self):
         self.dir_entrada = self.dir_imagenes
         dir_salida = self.dir_imagenes+"/../"
         dir_coincidencias = dir_salida+"coincidencias"
         dir_reconstruccion = dir_salida+"reconstruccion"
-        #par_sensor = "/home/jefferson/Escritorio/tesis/openMVG/src/openMVG/exif/sensor_width_database/sensor_width_camera_database.txt"
 
         if not os.path.exists(dir_coincidencias):
             os.mkdir(dir_coincidencias)
 
         if not os.path.exists(dir_reconstruccion):
             os.mkdir(dir_reconstruccion)
-        self.deshabilitarcrear3d()
-        self.bloqueoinferfaz(senal="On")
+        
+        self.bloqueoinferfaz(senal="Off", crear="Off")
         avance = 1
         etapas = 10
         self.progressBar.setTextVisible(True)
@@ -139,14 +143,13 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.progressBar.setValue(run(self.dir_entrada, dir_coincidencias, self.par_sensor, dir_reconstruccion, self.sel1md, self.sel1ca, self.sel2mg,
                 self.sel2mc, self.reldist, self.sel3rf, self.sel3mt, self.sel3mr, avance))
             avance += 1
-        self.progressBar.setFormat("Finalizado")
-        self.habilitarcrear3d()
+        self.leerresultados()
         self.stackedtrabajo.setCurrentWidget(self.pgn_resultados)
-        self.bloqueoinferfaz(senal="Off", ir_resultados="On")
+        self.bloqueoinferfaz(senal="On", ir_resultados="On", crear="On")
+        self.progressBar.setFormat("Finalizado")
     
     # ===== IMPORTAR IMAGENES =====
-    # Permite al usuario importar cada una de las imagenes a procesar al directorio de trabajo creado o abierto
-    # anteriormente.
+    # Importa cada una de las imagenes a procesar al directorio de trabajo creado o abierto anteriormente.
     def importarimagenes(self):
         self.listaimg.clear()
         self.leer_imagenes = []
@@ -160,13 +163,13 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             for a in archivo[0]:
                 shutil.copy2(a, self.dir_imagenes)
             self.leerdirectorio()
-            self.habilitarcrear3d()
+            self.bloqueoinferfaz(crear="On")
             self.BarraEstado.showMessage("Imagenes importadas correctamente")
         else:
             self.BarraEstado.showMessage("Seleccione las imagenes para continuar")
 
     # ===== ELIMINAR IMAGEN =====
-    # Permite eliminar imagenes del directorio de trabajo una vez se hayan importado.
+    # Elimina la imagen seleccionada del directorio de trabajo.
     def eliminarimagen(self):
         try:    
             if self.selimagen:
@@ -179,10 +182,9 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.BarraEstado.showMessage("El archivo no existe.")
 
     # ===== LEER DIRECTORIO =====
-    # Comprobara la existencia de las imagenes en el directorio de trabajo y se presentaran en pantalla según su
+    # Comprueba la existencia de las imagenes en el directorio de trabajo y se presentaran en pantalla según su
     # disponibilidad.
     def leerdirectorio(self):
-        # Mostrar el nombre proyecto actual en el titulo de la ventana.
         tituloproyecto = self.dir_imagenes.split('/')
         self.setWindowTitle("%s - Reconstruccion 3D" %tituloproyecto[len(tituloproyecto)-2])
         self.progressBar.setValue(0)
@@ -197,7 +199,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.visualimg.setPixmap(QPixmap("media/2130.png").scaledToWidth(440))
     
     # ===== MOSTRAR IMAGEN =====
-    # Como su nombre lo indica, permite visualizar escaladamente cada una de las imagenes que han sido importadas. El
+    # Busca y muestra la imagen seleccionada de la lista desplegada al usuario, su presentación se reescala a 440px de ancho. El
     # usuario debera clickear sobre algun elemento de la lista para ver la imagen.
     def mostrarimagen(self):
         if self.listaimg.currentItem().text() == "Aún no hay imagenes importadas!":
@@ -206,32 +208,25 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.selimagen = self.dir_imagenes+"/"+self.listaimg.currentItem().text()
             self.visualimg.setPixmap(QPixmap(self.selimagen).scaledToWidth(440))
 
-    # ===== HABILITAR CREAR 3D =====
-    # Este metodo habilita el boton "crear modelo 3D" una vez se ha configurado el proyecto.  
-    def habilitarcrear3d(self):
-        self.Crear3d.setEnabled(True)
-        self.Crear3d.setStyleSheet("border-radius: 0px;\n"
-        "background-color: rgb(46, 52, 54);\n"
-        "color: rgb(255, 255, 255);\n"
-        "")
-    
-    def deshabilitarcrear3d(self):
-        self.Crear3d.setEnabled(False)
-        self.Crear3d.setStyleSheet("border-radius: 0px;\n"
-        "background-color: rgb(136, 138, 133);\n"
-        "color: rgb(255, 255, 255);\n"
-        "")
-    
+    # ===== BLOQUEO DE INTERFAZ =====
+    # Habilita y deshabilita cada uno de los botones de la ventana y menu de trabajo dependiendo de ciertas condiciones.   
     def bloqueoinferfaz(self, **kwords):
         for k in kwords:
             if k == "ir_resultados":
-                self.ir_resultados.setEnabled(True)
-                self.ir_resultados.setStyleSheet("border-radius: 0px;\n"
-                "background-color: rgb(46, 52, 54);\n"
-                "color: rgb(255, 255, 255);\n"
-                "")
-            elif k == "senal":
                 if kwords[k] == "On":
+                    self.ir_resultados.setEnabled(True)
+                    self.ir_resultados.setStyleSheet("border-radius: 0px;\n"
+                    "background-color: rgb(46, 52, 54);\n"
+                    "color: rgb(255, 255, 255);\n"
+                    "")
+                elif kwords[k] == "Off":
+                    self.ir_resultados.setEnabled(False)
+                    self.ir_resultados.setStyleSheet("border-radius: 0px;\n"
+                    "background-color: rgb(136, 138, 133);\n"
+                    "color: rgb(255, 255, 255);\n"
+                    "")
+            elif k == "senal":
+                if kwords[k] == "Off":
                     self.NuevoProyecto.setEnabled(False)
                     self.AbrirProyecto.setEnabled(False)
                     self.ImportarImagenes.setEnabled(False)
@@ -256,7 +251,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                     "background-color: rgb(136, 138, 133);\n"
                     "color: rgb(255, 255, 255);\n"
                     "")
-                else:
+                elif kwords[k] == "On":
                     self.NuevoProyecto.setEnabled(True)
                     self.AbrirProyecto.setEnabled(True)
                     self.ImportarImagenes.setEnabled(True)
@@ -281,10 +276,22 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                     "background-color: rgb(46, 52, 54);\n"
                     "color: rgb(255, 255, 255);\n"
                     "")
+            elif k == "crear":
+                if kwords[k] == "On":
+                    self.Crear3d.setEnabled(True)
+                    self.Crear3d.setStyleSheet("border-radius: 0px;\n"
+                    "background-color: rgb(46, 52, 54);\n"
+                    "color: rgb(255, 255, 255);\n"
+                    "")
+                elif kwords[k] == "Off":
+                    self.Crear3d.setEnabled(False)
+                    self.Crear3d.setStyleSheet("border-radius: 0px;\n"
+                    "background-color: rgb(136, 138, 133);\n"
+                    "color: rgb(255, 255, 255);\n"
+                    "")
 
     # ===== CARGAR CONFIGURACION =====
-    # Este metodo permite cargar todas los paremetros definidos en cada una de las pestañas de la parte izquierda de
-    # la pantalla. Los parametros por defecto ya se encuentran cargados para ejecutar.
+    # Carga todos los paremetros configurados por el usuario. Los parametros por defecto ya se encuentran cargados para ejecutar.
     def cargarconfig(self):
         
         # ===== PARAMETROS DE CARACTERISTICAS =====
@@ -375,7 +382,10 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.sel3mr = "4"
         self.BarraEstado.showMessage("Configuración cargada correctamente", 2000)
 
+    # ===== CONFIGURACION POR DEFECTO =====
+    # Carga la configuracion por defecto para que el usuario no tenga ningun inconveniente al momento de ejecutar la reconstruccion.
     def configdefecto(self):
+        self.progressBar.setTextVisible(False)
         self.dir_imagenes = ""
         self.sel1md = "SIFT"
         self.sel1ca = "NORMAL"
@@ -385,37 +395,37 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.sel3rf = "ADJUST_ALL"
         self.sel3mt = "3"
         self.sel3mr = "3"
-        usuariopc = expanduser("~")
-        data = "sensor_width_camera_database.txt"
-        buscar = subprocess.run(["find", usuariopc, "-name", data], capture_output=True)
-        buscar2 = os.path.split(buscar.stdout.decode())[0]
-        self.par_sensor = os.path.join(buscar2, data)
+        self.par_sensor = database_sensor()
+        self.leer_resultados = []
         self.ir_resultados.setEnabled(False)
 
+    # ===== MOSTRAR RESULTADOS =====
+    # Muestra al usuario los archivos resultantes del proceso de reconstruccion. Para su visualizacion se hace uso del softwarea MeshLab. 
     def leerresultados(self):
         self.listares.clear()
         self.dir_reconstruccion2 = os.path.join(self.dir_imagenes,"./../reconstruccion")
         if os.path.exists(self.dir_reconstruccion2):
-            #self.leer_resultados = sorted(os.listdir(dir_reconstruccion))
-            #print(self.leer_resultados)
             self.leer_resultados = sorted([file for file in os.listdir(self.dir_reconstruccion2) if '.ply' in file], reverse=True)
-            #print(self.leer_resultados2)
             try:
                 self.leer_resultados
                 self.listares.addItems(self.leer_resultados)
             except:
                 self.listaimg.addItem("Sin reconstrucciones generadas!")
 
+    # ===== VENTANA DE RESULTADOS =====
     def resultados(self):
         self.stackedtrabajo.setCurrentWidget(self.pgn_resultados)
 
+    # ===== VENTANA DE IMAGENES IMPORTADAS =====
     def importadas(self):
         self.stackedtrabajo.setCurrentWidget(self.pgn_importadas)
 
+    # ===== VISUALIZAR ARCHIVOS DE RECOSNTRUCCION =====
     def visualizar(self):
         selresultado = self.dir_reconstruccion2+"/"+self.listares.currentItem().text()
-        pVis = subprocess.Popen(["meshlab", selresultado])
-        pVis.wait()
+        meshlab(selresultado)
+        #pVis = subprocess.Popen(["meshlab", selresultado])
+        #pVis.wait()
 
         
 # ============================== BUCLE DE TRABAJO ==============================

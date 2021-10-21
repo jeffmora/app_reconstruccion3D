@@ -1,12 +1,35 @@
+#!/venv/bin/ python
+
 # Este scrpit permite ejecutar la reconstrucción del modelo bajo la técnica de fotogrametría,
 # los pasos de esta técnica van desde anilizar cada una de la imagenes importadas, hasta
 # agregar las texturas al modelo computarizado.
 
+# ==================================== IMPORTAR LIBRERIAS ====================================
 # Importamos librerias propias del sistama para trabajar. 
 import os
 import subprocess
 import sys
+from os.path import expanduser
 
+# ===== BASE DE DATOS DE SENSORES =====
+# Busca el archivo de base de datos del sensor en todo el sistema y devuelve su ruta.
+def database_sensor():
+    usuariopc = expanduser("~")
+    data = "sensor_width_camera_database.txt"
+    buscar = subprocess.run(["find", usuariopc, "-name", data], capture_output=True)
+    buscar2 = os.path.split(buscar.stdout.decode())[0]
+    par_sensor = os.path.join(buscar2, data)
+    return par_sensor
+
+# ===== MESHLAB ====
+# Llama a Meshlab para visualizar los resultados.
+def meshlab(selresultado):
+    pVis = subprocess.Popen(["meshlab", selresultado])
+    pVis.wait()
+
+# ===== Core de reconstruccion 3D ====
+# Captura y asigna cada uno de los parametros de configuracion. Llama cada una de las funciones de las dependencias
+# de OpenMVG y OpenMVS.
 def run(*args):
     dir_entrada = args[0]
     dir_coincidencias = args[1]
@@ -23,7 +46,7 @@ def run(*args):
     avance = args[12]
 
     if avance == 1:
-        #Analisís y tratamiendo de imagenes con OPENMVG para la reconstrucción stereo de multiples vistas.
+        # Extraccion y organizacion de parametros intrincecos de cada imagen.
         print("\n 1. Extraer parametros Exif de cámara...")
         pIntrisecos = subprocess.Popen([
             "openMVG_main_SfMInit_ImageListing", 
@@ -34,6 +57,7 @@ def run(*args):
         pIntrisecos.wait()
         return 2
     elif avance == 2:
+        # Extraccion de caracteristicas de cada imagen.
         print("\n 2. Calcular características...")
         pCarater = subprocess.Popen([
             "openMVG_main_ComputeFeatures",
@@ -46,6 +70,8 @@ def run(*args):
         pCarater.wait()
         return 3
     elif avance == 3:
+        # Calculo de coincidencias entre pares de imagenes, compara cada vista disponible para buscar la mayor cantidad de similitudes
+        # y definir la mejor posicion de la vista, asimismo asocia una ubicacion de la camara en el medio.
         print("\n 3. Calcular coincidencias...")
         pCoincid = subprocess.Popen([
             "openMVG_main_ComputeMatches", 
@@ -58,6 +84,8 @@ def run(*args):
         pCoincid.wait()
         return 4
     elif avance == 4:
+        # Generacion de la nube de puntos con base en las caracteristicas de las imagenes y posicion halladas previamente. Presenta 
+        # la primera aproximacion de la reconstruccion.
         print("\n 4. Reconstrucción incremental SfM...")
         pRecons = subprocess.Popen([
             "openMVG_main_IncrementalSfM", 
@@ -71,6 +99,7 @@ def run(*args):
         pRecons.wait()
         return 5
     elif avance == 5:
+        # Asigancion estimada de colores a cada punto disponible. Aún no es la final es solo una aproximación.
         print("\n 5. Colorear Estructura...")
         pRecons = subprocess.Popen([
             "openMVG_main_ComputeSfM_DataColor", 
@@ -79,7 +108,7 @@ def run(*args):
         pRecons.wait()
         return 6
     elif avance == 6:
-        # Convesión de MVG a MVS.
+        # Conversion de archivo necesario para procesamiento posterior.
         print("\n 6. Convesión de MVG a MVS...")
         pConver = subprocess.Popen([
             "openMVG_main_openMVG2openMVS", 
@@ -90,7 +119,7 @@ def run(*args):
         pConver.wait()
         return 7
     elif avance == 7:
-        # Proceso de reconstrucción final del modelo.
+        # Densificacion de nube de puntos resultante del paso 4.
         print("\n 7. Creación de nube de puntos densa...")
         pDenPointCloud = subprocess.Popen([
             "/usr/local/bin/OpenMVS/DensifyPointCloud", 
@@ -101,6 +130,7 @@ def run(*args):
         pDenPointCloud.wait()
         return 8
     elif avance == 8:
+        # Creacion de la malla o cirre de puntos, primera etapa de modelado.
         print("\n 8. Reconstrucción de malla basada en nube de puntos, creación de modelo 3D...")
         pRecMesh = subprocess.Popen([
             "/usr/local/bin/OpenMVS/ReconstructMesh", 
@@ -110,7 +140,8 @@ def run(*args):
         pRecMesh.wait()
         return 9
     elif avance == 9:
-        print("\n 9. Reninamiento del modelo calculado...")
+        # Filtracion de malla para corregir y/o eliminar nodos erroneos.
+        print("\n 9. Refinamiento del modelo calculado...")
         pRefMesh = subprocess.Popen([
             "/usr/local/bin/OpenMVS/RefineMesh", 
             dir_reconstruccion+"/scene_dense_mesh.mvs", 
@@ -120,6 +151,7 @@ def run(*args):
         pRefMesh.wait()
         return 10
     elif avance == 10:
+        # Extraccion y adicion de texturas al modelo final basandose en las imagenes iniciales.
         print("\n 10. Texturizado de modelo final...")
         pTexMesh = subprocess.Popen([
             "/usr/local/bin/OpenMVS/TextureMesh", 

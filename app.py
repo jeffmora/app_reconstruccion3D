@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#!/venv/bin/ python
 
 # Form implementation generated from reading ui file 'app.ui'
 #
