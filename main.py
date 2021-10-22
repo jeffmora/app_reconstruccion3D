@@ -32,6 +32,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
     def __init__(self, *args, **kwargs):
         QtWidgets.QMainWindow.__init__(self, *args, **kwargs)
         self.setupUi(self)
+        self.setFixedSize(1000, 700)
                 
         # ============================== PARAMETROS INICIALES ============================== 
         self.stackedWidget.setCurrentWidget(self.pgn_inicio)
@@ -97,17 +98,17 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.dir_imagenes = os.path.join(abrir_directorio, directorio)
             if os.path.exists(self.dir_imagenes) == True:
                 self.BarraEstado.showMessage("Proyecto '%s' abierto correctamente." %abrir_directorio, 2000)
+                self.ImportarImagenes.setEnabled(True)
                 self.stackedWidget.setCurrentWidget(self.pgn_imagenes)
                 self.importadas()
-                self.ImportarImagenes.setEnabled(True)
                 self.leerdirectorio()
-                if self.leer_imagenes != []:
-                    self.bloqueoinferfaz(crear="On")
-                    self.leerresultados()
-                    if self.leer_resultados != []:
-                        self.bloqueoinferfaz(ir_resultados="On")
-                    else:
-                        self.bloqueoinferfaz(ir_resultados="Off")
+                #if self.leer_imagenes != []:
+                #    self.bloqueoinferfaz(crear="On")
+                self.leerresultados()
+                if self.leer_resultados != []:
+                    self.bloqueoinferfaz(ir_resultados="On")
+                else:
+                    self.bloqueoinferfaz(ir_resultados="Off")
             else:
                 self.BarraEstado.showMessage("El proyecto que intenta abrir no se ha creado, intente con 'Nuevo proyecto'.", 2000)
         else:
@@ -159,11 +160,10 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             directory = expanduser("~"),
             filter = "Imagenes (*.jpg *.jpeg)"
         )
-        if archivo:
+        if archivo[0]:
             for a in archivo[0]:
                 shutil.copy2(a, self.dir_imagenes)
             self.leerdirectorio()
-            self.bloqueoinferfaz(crear="On")
             self.BarraEstado.showMessage("Imagenes importadas correctamente")
         else:
             self.BarraEstado.showMessage("Seleccione las imagenes para continuar")
@@ -194,9 +194,11 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         if self.leer_imagenes:
             self.listaimg.addItems(self.leer_imagenes)
             self.visualimg.setPixmap(QPixmap(self.dir_imagenes+"/"+str(self.leer_imagenes[0])).scaledToWidth(440))
+            self.bloqueoinferfaz(crear="On")
         else:
             self.listaimg.addItem("Aún no hay imagenes importadas!")
             self.visualimg.setPixmap(QPixmap("media/2130.png").scaledToWidth(440))
+            self.bloqueoinferfaz(crear="Off")
     
     # ===== MOSTRAR IMAGEN =====
     # Busca y muestra la imagen seleccionada de la lista desplegada al usuario, su presentación se reescala a 440px de ancho. El
@@ -398,6 +400,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.par_sensor = database_sensor()
         self.leer_resultados = []
         self.ir_resultados.setEnabled(False)
+        self.bloqueoinferfaz(ir_resultados="Off", crear="Off")
 
     # ===== MOSTRAR RESULTADOS =====
     # Muestra al usuario los archivos resultantes del proceso de reconstruccion. Para su visualizacion se hace uso del softwarea MeshLab. 

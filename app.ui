@@ -1054,7 +1054,8 @@ color: rgb(255, 255, 255);
          </rect>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 255, 255);</string>
+         <string notr="true">background-color: rgb(255, 255, 255);
+border-image: url(:/logos/media/2130.png);</string>
         </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>

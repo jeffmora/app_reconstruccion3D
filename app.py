@@ -1,4 +1,4 @@
-#!/venv/bin/ python
+# -*- coding: utf-8 -*-
 
 # Form implementation generated from reading ui file 'app.ui'
 #
@@ -315,7 +315,8 @@ class Ui_Aplicacion(object):
         self.tituloimg.setObjectName("tituloimg")
         self.visualimg = QtWidgets.QLabel(self.pgn_importadas)
         self.visualimg.setGeometry(QtCore.QRect(270, 35, 440, 350))
-        self.visualimg.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.visualimg.setStyleSheet("background-color: rgb(255, 255, 255);\n"
+"border-image: url(:/logos/media/2130.png);")
         self.visualimg.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.visualimg.setText("")
         self.visualimg.setAlignment(QtCore.Qt.AlignCenter)
