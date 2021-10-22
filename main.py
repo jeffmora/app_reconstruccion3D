@@ -103,12 +103,12 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
                 self.importadas()
                 self.leerdirectorio()
                 #if self.leer_imagenes != []:
-                #    self.bloqueoinferfaz(crear="On")
+                #    self.bloqueointerfaz(crear="On")
                 self.leerresultados()
                 if self.leer_resultados != []:
-                    self.bloqueoinferfaz(ir_resultados="On")
+                    self.bloqueointerfaz(ir_resultados="On")
                 else:
-                    self.bloqueoinferfaz(ir_resultados="Off")
+                    self.bloqueointerfaz(ir_resultados="Off")
             else:
                 self.BarraEstado.showMessage("El proyecto que intenta abrir no se ha creado, intente con 'Nuevo proyecto'.", 2000)
         else:
@@ -133,7 +133,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         if not os.path.exists(dir_reconstruccion):
             os.mkdir(dir_reconstruccion)
         
-        self.bloqueoinferfaz(senal="Off", crear="Off")
+        self.bloqueointerfaz(senal="Off", crear="Off")
         avance = 1
         etapas = 10
         self.progressBar.setTextVisible(True)
@@ -146,7 +146,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             avance += 1
         self.leerresultados()
         self.stackedtrabajo.setCurrentWidget(self.pgn_resultados)
-        self.bloqueoinferfaz(senal="On", ir_resultados="On", crear="On")
+        self.bloqueointerfaz(senal="On", ir_resultados="On", crear="On")
         self.progressBar.setFormat("Finalizado")
     
     # ===== IMPORTAR IMAGENES =====
@@ -194,11 +194,11 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         if self.leer_imagenes:
             self.listaimg.addItems(self.leer_imagenes)
             self.visualimg.setPixmap(QPixmap(self.dir_imagenes+"/"+str(self.leer_imagenes[0])).scaledToWidth(440))
-            self.bloqueoinferfaz(crear="On")
+            self.bloqueointerfaz(crear="On")
         else:
             self.listaimg.addItem("Aún no hay imagenes importadas!")
             self.visualimg.setPixmap(QPixmap("media/2130.png").scaledToWidth(440))
-            self.bloqueoinferfaz(crear="Off")
+            self.bloqueointerfaz(crear="Off")
     
     # ===== MOSTRAR IMAGEN =====
     # Busca y muestra la imagen seleccionada de la lista desplegada al usuario, su presentación se reescala a 440px de ancho. El
@@ -212,7 +212,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
 
     # ===== BLOQUEO DE INTERFAZ =====
     # Habilita y deshabilita cada uno de los botones de la ventana y menu de trabajo dependiendo de ciertas condiciones.   
-    def bloqueoinferfaz(self, **kwords):
+    def bloqueointerfaz(self, **kwords):
         for k in kwords:
             if k == "ir_resultados":
                 if kwords[k] == "On":
@@ -400,7 +400,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.par_sensor = database_sensor()
         self.leer_resultados = []
         self.ir_resultados.setEnabled(False)
-        self.bloqueoinferfaz(ir_resultados="Off", crear="Off")
+        self.bloqueointerfaz(ir_resultados="Off", crear="Off")
 
     # ===== MOSTRAR RESULTADOS =====
     # Muestra al usuario los archivos resultantes del proceso de reconstruccion. Para su visualizacion se hace uso del softwarea MeshLab. 
