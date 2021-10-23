@@ -147,7 +147,7 @@ def run(*args):
             dir_reconstruccion+"/scene_dense_mesh.mvs", 
             "-w", dir_reconstruccion,
             "--max-threads", "0",
-            "--max-face-area", "32"])
+            "--max-face-area", "16"])
         pRefMesh.wait()
         return 10
     elif avance == 10:

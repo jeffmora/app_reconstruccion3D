@@ -97,18 +97,19 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             directorio = "imagenes"
             self.dir_imagenes = os.path.join(abrir_directorio, directorio)
             if os.path.exists(self.dir_imagenes) == True:
-                self.BarraEstado.showMessage("Proyecto '%s' abierto correctamente." %abrir_directorio, 2000)
+                if os.path.exists(self.dir_imagenes+"/../configuracion_cargada.txt"):
+                    gl = "Leer"
+                    self.guardarconfig(gl)
                 self.ImportarImagenes.setEnabled(True)
                 self.stackedWidget.setCurrentWidget(self.pgn_imagenes)
                 self.importadas()
                 self.leerdirectorio()
-                #if self.leer_imagenes != []:
-                #    self.bloqueointerfaz(crear="On")
                 self.leerresultados()
                 if self.leer_resultados != []:
                     self.bloqueointerfaz(ir_resultados="On")
                 else:
                     self.bloqueointerfaz(ir_resultados="Off")
+                self.BarraEstado.showMessage("Proyecto '%s' abierto correctamente." %abrir_directorio, 2000)
             else:
                 self.BarraEstado.showMessage("El proyecto que intenta abrir no se ha creado, intente con 'Nuevo proyecto'.", 2000)
         else:
@@ -382,6 +383,9 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.sel3mr = "3"
         elif self.sel3mre.isChecked():
             self.sel3mr = "4"
+        
+        gl = "Guardar"
+        self.guardarconfig(gl)
         self.BarraEstado.showMessage("Configuración cargada correctamente", 2000)
 
     # ===== CONFIGURACION POR DEFECTO =====
@@ -397,10 +401,126 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.sel3rf = "ADJUST_ALL"
         self.sel3mt = "3"
         self.sel3mr = "3"
+        self.cargaropciones()
         self.par_sensor = database_sensor()
         self.leer_resultados = []
         self.ir_resultados.setEnabled(False)
         self.bloqueointerfaz(ir_resultados="Off", crear="Off")
+
+    # ===== ARCHIVO DE CONFIGURACION =====
+    # Guarda la configuracion elegida una para la reconstruccion cuando se oprime le boton de cargar, creando un archivo en el directorio de trabajo. 
+    # Asimismo permite leer este archivo una vez se abra cada proyecto, con el fin de registar las ultimas opciones elegidas. 
+    def guardarconfig(self, gl):
+        if gl == "Guardar":
+            crear_archivo = open(self.dir_imagenes+"/../configuracion_cargada.txt", "w")
+            crear_archivo.writelines([self.sel1md+'\n', self.sel1ca+'\n', self.sel2mg+'\n', self.sel2mc+'\n', self.reldist+'\n', self.sel3rf+'\n', self.sel3mt+'\n', self.sel3mr])
+            crear_archivo.close()
+            del(crear_archivo)
+        else:
+            leer_archivo = open(self.dir_imagenes+"/../configuracion_cargada.txt", "r")
+            parametros = leer_archivo.readlines()
+            leer_archivo.close()
+            del(leer_archivo)
+            self.sel1md = ''.join(x for x in parametros[0] if x not in "\n")
+            self.sel1ca = ''.join(x for x in parametros[1] if x not in "\n")
+            self.sel2mg = ''.join(x for x in parametros[2] if x not in "\n")
+            self.sel2mc = ''.join(x for x in parametros[3] if x not in "\n")
+            self.reldist = ''.join(x for x in parametros[4] if x not in "\n")
+            self.sel3rf = ''.join(x for x in parametros[5] if x not in "\n")
+            self.sel3mt = ''.join(x for x in parametros[6] if x not in "\n")
+            self.sel3mr = parametros[7]
+            self.cargaropciones()
+
+    # ===== CARGAR ARCHIVO DE CONFIGURACION =====
+    # Cambia la seleccion de cada checkbutton despues de que se ha leido el archivo de configuracion del directorio de trabajo.
+    def cargaropciones(self):
+
+        # ===== PARAMETROS DE CARACTERISTICAS =====
+
+        # METODO DESCRIPTOR
+        if self.sel1md == "SIFT":
+            self.sel1mda.setChecked(True)
+        elif self.sel1md == "AKAZE_FLOAT":
+            self.sel1mdb.setChecked(True)
+        elif self.sel1md == "AKAZE_MLDB":
+            self.sel1mdc.setChecked(True)
+
+        # DEFINICION
+        if self.sel1ca == "NORMAL":
+            self.sel1caa.setChecked(True)
+        elif self.sel1ca == "HIGH":
+            self.sel1cab.setChecked(True)
+        elif self.sel1ca == "ULTRA":
+            self.sel1cac.setChecked(True)
+
+        # ===== PARAMETROS DE CORRESPONDENCIA =====
+
+        # MODELO GEOMETRICO
+        if self.sel2mg == "f":
+            self.sel2mga.setChecked(True)
+        elif self.sel2mg == "e":
+            self.sel2mgb.setChecked(True)
+        elif self.sel2mg == "h":
+            self.sel2mgc.setChecked(True)
+        elif self.sel2mg == "a":
+            self.sel2mgd.setChecked(True)
+        elif self.sel2mg == "o":
+            self.sel2mge.setChecked(True)
+        elif self.sel2mg == "u":
+            self.sel2mgf.setChecked(True)
+        
+        # MODELO DE COINCIDENCIA
+        if self.sel2mc == "AUTO":
+            self.sel2mca.setChecked(True)
+        elif self.sel2mc == "BRUTEFORCEL2":
+            self.sel2mcb.setChecked(True)
+        elif self.sel2mc == "ANNL2":
+            self.sel2mcc.setChecked(True)
+        elif self.sel2mc == "CASCADEHASHINGL2":
+            self.sel2mcd.setChecked(True)
+        elif self.sel2mc == "FASTCASCADEHASHINGL2":
+            self.sel2mce.setChecked(True)
+        elif self.sel2mc == "BRUTEFORCEHAMMING":
+            self.sel2mcf.setChecked(True)
+        
+        # RELACION DE DISTANCIA
+        self.numrel.setProperty("value", self.reldist)
+
+        # ===== PARAMETROS DE SFM INCREMENTAL =====
+
+        # REFINAMIENTOS DE INTRINSECOS
+        if self.sel3rf == "ADJUST_ALL":
+            self.sel3rfa.setChecked(True)
+        elif self.sel3rf == "NONE":
+            self.sel3rfb.setChecked(True)
+        elif self.sel3rf == "ADJUST_FOCAL_LENGTH":
+            self.sel3rfc.setChecked(True)
+        elif self.sel3rf == "ADJUST_PRINCIPAL_POINT":
+            self.sel3rfd.setChecked(True)
+        elif self.sel3rf == "ADJUST_DISTORTION":
+            self.sel3rfe.setChecked(True)
+        
+        # METODO DE TRIANGULACION
+        if self.sel3mt == "0":
+            self.sel3mta.setChecked(True)
+        elif self.sel3mt == "1":
+            self.sel3mtb.setChecked(True)
+        elif self.sel3mt == "2":
+            self.sel3mtc.setChecked(True)
+        elif self.sel3mt == "3":
+            self.sel3mtd.setChecked(True)
+        
+        # METODO DE RECESION
+        if self.sel3mr == "0":
+            self.sel3mra.setChecked(True)
+        elif self.sel3mr == "1":
+            self.sel3mrb.setChecked(True)
+        elif self.sel3mr == "2":
+            self.sel3mrc.setChecked(True)
+        elif self.sel3mr == "3":
+            self.sel3mrd.setChecked(True)
+        elif self.sel3mr == "4":
+            self.sel3mre.setChecked(True)
 
     # ===== MOSTRAR RESULTADOS =====
     # Muestra al usuario los archivos resultantes del proceso de reconstruccion. Para su visualizacion se hace uso del softwarea MeshLab. 
@@ -427,9 +547,6 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
     def visualizar(self):
         selresultado = self.dir_reconstruccion2+"/"+self.listares.currentItem().text()
         meshlab(selresultado)
-        #pVis = subprocess.Popen(["meshlab", selresultado])
-        #pVis.wait()
-
         
 # ============================== BUCLE DE TRABAJO ==============================
 if __name__ == "__main__":
