@@ -44,6 +44,10 @@ def run(*args):
     metodo_triangulacion = args[10]
     metodo_recesion = args[11]
     avance = args[12]
+    dir_cnd_geometricas = args[13]
+    dir_pistas = args[14]
+    imagenparA = args[15]
+    imagenparB = args[16]
 
     if avance == 1:
         # Extraccion y organizacion de parametros intrincecos de cada imagen.
@@ -53,7 +57,7 @@ def run(*args):
             "-i", dir_entrada, 
             "-o", dir_coincidencias, 
             "-d", par_sensor, 
-            "-c", "2"])
+            "-c", "1"])
         pIntrisecos.wait()
         return 2
     elif avance == 2:
@@ -68,6 +72,13 @@ def run(*args):
             "-p", definicion,
             "-n", "0"])
         pCarater.wait()
+        # Conversion de resultados obtenidos a formato .svg para visualizacion
+        pPuntos = subprocess.Popen([
+            "openMVG_main_exportKeypoints",
+            "-i", dir_coincidencias+"/sfm_data.json",
+            "-d", dir_coincidencias,
+            "-o", dir_coincidencias])
+        pPuntos.wait()
         return 3
     elif avance == 3:
         # Calculo de coincidencias entre pares de imagenes, compara cada vista disponible para buscar la mayor cantidad de similitudes
@@ -82,6 +93,22 @@ def run(*args):
             "-g", modelo_geometrico,
             "-n", metodo_coincidencia])
         pCoincid.wait()
+        # Exportar coincidencias para visualizacion en formato .svg
+        pCoincid = subprocess.Popen([
+            "openMVG_main_exportMatches", 
+            "-i", dir_coincidencias+"/sfm_data.json",
+            "-d", dir_coincidencias,
+            "-m", dir_coincidencias+"/matches.putative.bin",
+            "-o", dir_cnd_geometricas])
+        pCoincid.wait()
+        # Exportar pistas para visualizacion en formato .svg
+        pCoincid = subprocess.Popen([
+            "openMVG_main_exportTracks", 
+            "-i", dir_coincidencias+"/sfm_data.json",
+            "-d", dir_coincidencias,
+            "-m", dir_coincidencias+"/matches.putative.bin",
+            "-o", dir_pistas])
+        pCoincid.wait()
         return 4
     elif avance == 4:
         # Generacion de la nube de puntos con base en las caracteristicas de las imagenes y posicion halladas previamente. Presenta 
@@ -92,7 +119,9 @@ def run(*args):
             "-i", dir_coincidencias+"/sfm_data.json", 
             "-m", dir_coincidencias, 
             "-o", dir_reconstruccion,
-            "-c", "2",
+            "-a", imagenparA,
+            "-b", imagenparB,
+            "-c", "1",
             "-f", refinamiento_intrinsecos,
             "-t", metodo_triangulacion,
             "-r", metodo_recesion])
