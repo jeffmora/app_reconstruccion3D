@@ -62,7 +62,7 @@ def run(*args):
         return 2
     elif avance == 2:
         # Extraccion de caracteristicas de cada imagen.
-        print("\n 2. Calcular características...")
+        print("\n 2. Extraer características...")
         pCarater = subprocess.Popen([
             "openMVG_main_ComputeFeatures",
             "-i", dir_coincidencias+"/sfm_data.json",
@@ -119,8 +119,8 @@ def run(*args):
             "-i", dir_coincidencias+"/sfm_data.json", 
             "-m", dir_coincidencias, 
             "-o", dir_reconstruccion,
-            "-a", imagenparA,
-            "-b", imagenparB,
+            #"-a", imagenparA,
+            #"-b", imagenparB,
             "-c", "1",
             "-f", refinamiento_intrinsecos,
             "-t", metodo_triangulacion,

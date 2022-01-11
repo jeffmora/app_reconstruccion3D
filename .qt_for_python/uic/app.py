@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'app.ui'
+# Form implementation generated from reading ui file '/home/jefferson/Escritorio/tesis/gui/app.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -574,4 +574,4 @@ class Ui_Aplicacion(object):
         self.ImportarImagenes.setShortcut(_translate("Aplicacion", "Ctrl+I"))
         self.Salir.setText(_translate("Aplicacion", "Salir"))
         self.Salir.setShortcut(_translate("Aplicacion", "Ctrl+E"))
-import logos
+import logos_rc

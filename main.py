@@ -150,12 +150,11 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
         self.progressBar.setValue(avance)
         self.progressBar.setFormat("Trabajando...  %v/%m")
         for e in range(etapas):
-            self.progressBar.setValue(run(self.dir_entrada, dir_coincidencias, self.par_sensor, dir_reconstruccion, self.sel1md, self.sel1ca, self.sel2mg,
-                self.sel2mc, self.reldist, self.sel3rf, self.sel3mt, self.sel3mr, avance, dir_cnd_geometricas, dir_pistas, self.imagenparA, self.imagenparB))
+            self.progressBar.setValue(run(self.dir_entrada, dir_coincidencias, self.par_sensor, dir_reconstruccion, self.sel1md, self.sel1ca, self.sel2mg, self.sel2mc, self.reldist, self.sel3rf, self.sel3mt, self.sel3mr, avance, dir_cnd_geometricas, dir_pistas, self.imagenparA, self.imagenparB))
             avance += 1
         self.leerresultados()
         self.stackedtrabajo.setCurrentWidget(self.pgn_resultados)
-        self.bloqueointerfaz(senal="On", ir_resultados="On", crear="On")
+        self.bloqueointerfaz(senal="On", ir_resultados="On", crear="On")   
         self.progressBar.setFormat("Finalizado")
     
     # ===== IMPORTAR IMAGENES =====
@@ -205,7 +204,7 @@ class MainWindows(QtWidgets.QMainWindow, Ui_Aplicacion):
             self.visualimg.setPixmap(QPixmap(self.dir_imagenes+"/"+str(self.leer_imagenes[0])).scaledToWidth(440))
             self.bloqueointerfaz(crear="On")
             self.imagenparA = self.leer_imagenes[1]
-            self.imagenparB = self.leer_imagenes[6]
+            self.imagenparB = self.leer_imagenes[12]
         else:
             self.listaimg.addItem("Aún no hay imagenes importadas!")
             self.visualimg.setPixmap(QPixmap("media/2130.png").scaledToWidth(440))
