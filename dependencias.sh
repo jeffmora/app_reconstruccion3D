@@ -12,6 +12,7 @@ git clone --recursive https://github.com/openMVG/openMVG.git
 mkdir openMVG_Build && cd openMVG_Build
 cmake -DCMAKE_BUILD_TYPE=RELEASE ../openMVG/src/
 cmake --build . --target install
+cd ..
 
 #Eigen (Requerido)
 git clone https://gitlab.com/libeigen/eigen.git --branch 3.4
@@ -45,6 +46,7 @@ git clone https://github.com/cdcseacave/openMVS.git openMVS
 mkdir openMVS_build && cd openMVS_build
 cmake . ../openMVS -DCMAKE_BUILD_TYPE=Release -DVCG_ROOT="$main_path/vcglib"
 make -j2 && sudo make install
+cd ..
 
 #MeshLab (Requerido)
 sudo apt-get install meshlab
